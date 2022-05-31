@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uz.pdp.online.transfermoney.Controller.ControlAll;
 import uz.pdp.online.transfermoney.Security.JwtProvider;
 
 import java.util.ArrayList;
@@ -25,7 +24,8 @@ public class MyAuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        List<User> usersList = new ArrayList<>(
+
+        List<User> userList = new ArrayList<>(
                 Arrays.asList(
                         new User("anvar", passwordEncoder.encode("anvar"), new ArrayList<>()),
                         new User("salim", passwordEncoder.encode("456"), new ArrayList<>()),
@@ -34,7 +34,7 @@ public class MyAuthService implements UserDetailsService {
                 )
         );
 
-        for (User user : usersList) {
+        for (User user : userList) {
             if (user.getUsername().equals(username)) {
                 System.out.println(jwtProvider.generateToken(username));
                 return user;

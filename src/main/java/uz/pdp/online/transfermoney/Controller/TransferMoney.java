@@ -5,8 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.online.transfermoney.Security.JwtProvider;
-import uz.pdp.online.transfermoney.playload.model.ApiResponse;
-import uz.pdp.online.transfermoney.playload.model.TransferingModel;
+import uz.pdp.online.transfermoney.Entity.model.ApiResponse;
+import uz.pdp.online.transfermoney.Entity.model.TransferingModel;
+import uz.pdp.online.transfermoney.Service.CardService;
+import uz.pdp.online.transfermoney.Service.IncomeService;
+import uz.pdp.online.transfermoney.Service.OutcomeService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,6 +20,12 @@ public class TransferMoney {
 
     @Autowired
     JwtProvider jwtProvider;
+    @Autowired
+    CardService cardService;
+    @Autowired
+    IncomeService incomeService;
+    @Autowired
+    OutcomeService outcomeService;
 
     @PostMapping
     public ResponseEntity transfer(HttpServletRequest request, @RequestBody TransferingModel transferingModel) {
@@ -24,12 +33,12 @@ public class TransferMoney {
         token = token.substring(7);
         String username = jwtProvider.getUsernameFromToken(token);
 
-        ControlAll controlAll = new ControlAll();
-        controlAll.getCardDtoList();
-        ApiResponse apiResponse = controlAll.editCardInformation(username, transferingModel);
+        cardService.addCardDefaults();
+
+        ApiResponse apiResponse = cardService.sendMoneyEditCardInformation(username, transferingModel);
         if (apiResponse.isSuccess()) {
-            controlAll.addIncome(username, transferingModel);
-            controlAll.addOutcome(username, transferingModel);
+            incomeService.addIncome(username, transferingModel);
+            outcomeService.addOutcome(username, transferingModel);
             return ResponseEntity.ok(apiResponse);
         }
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(apiResponse);

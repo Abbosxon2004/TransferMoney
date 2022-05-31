@@ -1,4 +1,4 @@
-package uz.pdp.online.transfermoney.playload.model;
+package uz.pdp.online.transfermoney.Entity.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
